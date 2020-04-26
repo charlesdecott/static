@@ -1,10 +1,14 @@
 pipeline{
         agent any
         stages {
-            stage('Lint HTML'){
+            stage('Upload to AWS') {
                 steps {
-                    sh 'tidy -q -e *.html'
+                    retry(3){
+                        withAWS(region:'us-west-2', credentials:'aws-static'){
+                        s3Upload(file:'index.html', bucket:'p4-udacity-static-html', path:'')
+                    }                             
                 }
             }
+        }
     }
 }
